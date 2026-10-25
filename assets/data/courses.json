@@ -1,0 +1,749 @@
+{
+  "_note": "COURSES — Naya course jodna ho to ek block copy karke niche paste karo aur values badlo. 'id' har course ka alag hona chahiye. Naam, category, price, image aur format sir ki LMS website (lms.digitalvidyalaya.co.in) se liye gaye hain. rating, students, lessons, duration, mrp aur modules DEMO values hain — asli values daalein. rating ya students ko 0 kar doge to woh screen pe nahi dikhega. badge: \"BESTSELLER\", \"NEW\" ya null. VIDEO: har lesson me { \"title\": \"...\", \"videoId\": \"YouTube ID\", \"duration\": \"9:20\" } likho. videoId nahi diya to app_config.dart ka demoVideoId chalega. YouTube link https://youtu.be/OzIjZAIy6Cc me ID = OzIjZAIy6Cc. Pehla lesson sabke liye FREE preview hota hai.",
+  "courses": [
+    {
+      "id": 1,
+      "title": "Java Programming",
+      "subtitle": "Core and Advanced Java Development",
+      "category": "Programming",
+      "image": "https://lms.digitalvidyalaya.co.in/images/courses/java.jpg",
+      "price": 9,
+      "mrp": 499,
+      "language": "Hindi",
+      "trainer": "Sagar Choudhary",
+      "format": "On Demand Video + Quiz for Certificate",
+      "lessons": 26,
+      "duration": "12h 30m",
+      "rating": 4.8,
+      "students": 4860,
+      "badge": "BESTSELLER",
+      "description": "Java ko bilkul basics se seekhiye — variables, OOP concepts, exception handling, collections aur JDBC. Har module ke baad practice aur last me mini project. Course complete karke quiz dijiye aur verified certificate paiye.",
+      "modules": [
+        {
+          "title": "Module 1: Introduction to Java",
+          "lessons": [
+            {
+              "title": "What is Java",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "9:20"
+            },
+            {
+              "title": "Installing JDK",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "10:15"
+            },
+            {
+              "title": "Your first Java program",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "12:40"
+            }
+          ]
+        },
+        {
+          "title": "Module 2: Variables & Data Types",
+          "lessons": [
+            {
+              "title": "Variables",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "8:30"
+            },
+            {
+              "title": "Primitive data types",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "11:05"
+            },
+            {
+              "title": "Type casting",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "9:50"
+            }
+          ]
+        },
+        {
+          "title": "Module 3: Operators",
+          "lessons": [
+            {
+              "title": "Arithmetic operators",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "7:45"
+            },
+            {
+              "title": "Relational & logical operators",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "10:30"
+            }
+          ]
+        },
+        {
+          "title": "Module 4: Control Statements",
+          "lessons": [
+            {
+              "title": "if-else",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "13:10"
+            },
+            {
+              "title": "switch",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "12:00"
+            },
+            {
+              "title": "Loops",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "9:15"
+            }
+          ]
+        },
+        {
+          "title": "Module 5: OOP Concepts",
+          "lessons": [
+            {
+              "title": "Class & object",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "14:20"
+            },
+            {
+              "title": "Inheritance",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "11:40"
+            },
+            {
+              "title": "Polymorphism",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "8:55"
+            },
+            {
+              "title": "Abstraction & encapsulation",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "10:05"
+            }
+          ]
+        },
+        {
+          "title": "Module 6: Arrays & Strings",
+          "lessons": [
+            {
+              "title": "Arrays",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "12:30"
+            },
+            {
+              "title": "String methods",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "9:40"
+            }
+          ]
+        },
+        {
+          "title": "Module 7: Exception Handling",
+          "lessons": [
+            {
+              "title": "try-catch-finally",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "15:10"
+            },
+            {
+              "title": "Custom exceptions",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "11:25"
+            }
+          ]
+        },
+        {
+          "title": "Module 8: Collections Framework",
+          "lessons": [
+            {
+              "title": "ArrayList",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "10:50"
+            },
+            {
+              "title": "HashMap",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "13:45"
+            },
+            {
+              "title": "HashSet",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "12:15"
+            }
+          ]
+        },
+        {
+          "title": "Module 9: JDBC",
+          "lessons": [
+            {
+              "title": "Connecting to MySQL",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "9:05"
+            },
+            {
+              "title": "CRUD with JDBC",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "16:30"
+            }
+          ]
+        },
+        {
+          "title": "Module 10: Mini Project",
+          "lessons": [
+            {
+              "title": "Student management project",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "18:00"
+            },
+            {
+              "title": "Project review & next steps",
+              "videoId": "OzIjZAIy6Cc",
+              "duration": "14:30"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "C Programming",
+      "subtitle": "Programming Fundamentals and Logic Building",
+      "category": "Programming",
+      "image": "https://lms.digitalvidyalaya.co.in/images/courses/c.jpg",
+      "price": 9,
+      "mrp": 499,
+      "language": "Hindi",
+      "trainer": "Sagar Choudhary",
+      "format": "On Demand Video + Quiz for Certificate",
+      "lessons": 24,
+      "duration": "10h 45m",
+      "rating": 4.6,
+      "students": 3210,
+      "badge": "BESTSELLER",
+      "description": "Programming ki shuruaat C se kijiye. Logic building, loops, functions, arrays, pointers aur file handling — sab simple Hindi me, examples ke saath.",
+      "modules": [
+        {
+          "title": "Module 1: Introduction to C",
+          "lessons": []
+        },
+        {
+          "title": "Module 2: Data Types & Operators",
+          "lessons": []
+        },
+        {
+          "title": "Module 3: Decision Making & Loops",
+          "lessons": []
+        },
+        {
+          "title": "Module 4: Functions",
+          "lessons": []
+        },
+        {
+          "title": "Module 5: Arrays & Strings",
+          "lessons": []
+        },
+        {
+          "title": "Module 6: Pointers",
+          "lessons": []
+        },
+        {
+          "title": "Module 7: Structures & File Handling",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Algorithms",
+      "subtitle": "Algorithm Design and Analysis",
+      "category": "Programming",
+      "image": "https://lms.digitalvidyalaya.co.in/images/courses/algo.jpg",
+      "price": 9,
+      "mrp": 499,
+      "language": "Hindi",
+      "trainer": "Sagar Choudhary",
+      "format": "On Demand Video + Quiz for Certificate",
+      "lessons": 32,
+      "duration": "15h 20m",
+      "rating": 4.7,
+      "students": 1870,
+      "badge": "NEW",
+      "description": "Algorithms ko design aur analyse karna seekhiye — time complexity, sorting, searching, divide and conquer, greedy aur dynamic programming.",
+      "modules": [
+        {
+          "title": "Module 1: Asymptotic Analysis",
+          "lessons": []
+        },
+        {
+          "title": "Module 2: Sorting & Searching",
+          "lessons": []
+        },
+        {
+          "title": "Module 3: Divide and Conquer",
+          "lessons": []
+        },
+        {
+          "title": "Module 4: Greedy Algorithms",
+          "lessons": []
+        },
+        {
+          "title": "Module 5: Dynamic Programming",
+          "lessons": []
+        },
+        {
+          "title": "Module 6: Graph Algorithms",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Compiler Design",
+      "subtitle": "Compiler Construction Concepts",
+      "category": "Computer Science",
+      "image": "https://lms.digitalvidyalaya.co.in/images/courses/compiler.jpg",
+      "price": 9,
+      "mrp": 499,
+      "language": "Hindi",
+      "trainer": "Sagar Choudhary",
+      "format": "On Demand Video + Quiz for Certificate",
+      "lessons": 22,
+      "duration": "11h 10m",
+      "rating": 4.5,
+      "students": 1120,
+      "badge": null,
+      "description": "Compiler kaise kaam karta hai — lexical analysis se code generation tak har phase ko B.Tech aur GATE syllabus ke hisaab se samjhiye.",
+      "modules": [
+        {
+          "title": "Module 1: Introduction & Phases of Compiler",
+          "lessons": []
+        },
+        {
+          "title": "Module 2: Lexical Analysis",
+          "lessons": []
+        },
+        {
+          "title": "Module 3: Syntax Analysis (Parsing)",
+          "lessons": []
+        },
+        {
+          "title": "Module 4: Syntax Directed Translation",
+          "lessons": []
+        },
+        {
+          "title": "Module 5: Intermediate Code Generation",
+          "lessons": []
+        },
+        {
+          "title": "Module 6: Code Optimization",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Theory of Automata",
+      "subtitle": "Automata and Formal Languages",
+      "category": "Computer Science",
+      "image": "https://lms.digitalvidyalaya.co.in/images/courses/automata.jpg",
+      "price": 9,
+      "mrp": 499,
+      "language": "Hindi",
+      "trainer": "Sagar Choudhary",
+      "format": "On Demand Video + Quiz for Certificate",
+      "lessons": 20,
+      "duration": "9h 50m",
+      "rating": 4.6,
+      "students": 1340,
+      "badge": null,
+      "description": "Finite automata, regular expressions, context free grammar, pushdown automata aur Turing machine — exam oriented explanation ke saath.",
+      "modules": [
+        {
+          "title": "Module 1: Finite Automata (DFA & NFA)",
+          "lessons": []
+        },
+        {
+          "title": "Module 2: Regular Expressions & Languages",
+          "lessons": []
+        },
+        {
+          "title": "Module 3: Context Free Grammar",
+          "lessons": []
+        },
+        {
+          "title": "Module 4: Pushdown Automata",
+          "lessons": []
+        },
+        {
+          "title": "Module 5: Turing Machine",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "title": "HTML5",
+      "subtitle": "Web Development Basics",
+      "category": "Web Development",
+      "image": "https://lms.digitalvidyalaya.co.in/images/courses/html.jpg",
+      "price": 9,
+      "mrp": 499,
+      "language": "Hindi",
+      "trainer": "Sagar Choudhary",
+      "format": "On Demand Video + Quiz for Certificate",
+      "lessons": 16,
+      "duration": "6h 15m",
+      "rating": 4.5,
+      "students": 2780,
+      "badge": null,
+      "description": "Website banana HTML5 se shuru hota hai. Tags, forms, tables, media aur semantic HTML seekhiye aur apna pehla web page banaiye.",
+      "modules": [
+        {
+          "title": "Module 1: Introduction to HTML",
+          "lessons": []
+        },
+        {
+          "title": "Module 2: Text, Links & Images",
+          "lessons": []
+        },
+        {
+          "title": "Module 3: Lists & Tables",
+          "lessons": []
+        },
+        {
+          "title": "Module 4: Forms",
+          "lessons": []
+        },
+        {
+          "title": "Module 5: Semantic HTML5 & Media",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "title": "CSS3",
+      "subtitle": "Responsive Web Design",
+      "category": "Web Development",
+      "image": "https://lms.digitalvidyalaya.co.in/images/courses/css.jpg",
+      "price": 9,
+      "mrp": 499,
+      "language": "Hindi",
+      "trainer": "Sagar Choudhary",
+      "format": "On Demand Video + Quiz for Certificate",
+      "lessons": 18,
+      "duration": "7h 10m",
+      "rating": 4.4,
+      "students": 2410,
+      "badge": "NEW",
+      "description": "CSS3 se websites ko sundar aur mobile-friendly banaiye — selectors, box model, Flexbox, Grid aur media queries.",
+      "modules": [
+        {
+          "title": "Module 1: CSS Basics & Selectors",
+          "lessons": []
+        },
+        {
+          "title": "Module 2: Box Model",
+          "lessons": []
+        },
+        {
+          "title": "Module 3: Flexbox",
+          "lessons": []
+        },
+        {
+          "title": "Module 4: CSS Grid",
+          "lessons": []
+        },
+        {
+          "title": "Module 5: Responsive Design & Media Queries",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "title": "Content Marketing",
+      "subtitle": "Content Creation and Marketing",
+      "category": "Marketing",
+      "image": "https://lms.digitalvidyalaya.co.in/images/courses/content.jpg",
+      "price": 9,
+      "mrp": 499,
+      "language": "Hindi",
+      "trainer": "Sagar Choudhary",
+      "format": "Quiz to get Certificate",
+      "lessons": 10,
+      "duration": "4h 30m",
+      "rating": 4.3,
+      "students": 960,
+      "badge": null,
+      "description": "Brand ke liye content kaise banayein aur promote karein — content strategy, blog, social media aur SEO basics.",
+      "modules": [
+        {
+          "title": "Module 1: What is Content Marketing",
+          "lessons": []
+        },
+        {
+          "title": "Module 2: Content Strategy",
+          "lessons": []
+        },
+        {
+          "title": "Module 3: Social Media Content",
+          "lessons": []
+        },
+        {
+          "title": "Module 4: SEO Basics",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "title": "GATE Computer Science",
+      "subtitle": "GATE CSE Complete Preparation",
+      "category": "Competitive Exam",
+      "image": "https://lms.digitalvidyalaya.co.in/images/courses/gate.jpg",
+      "price": 9,
+      "mrp": 499,
+      "language": "Hindi",
+      "trainer": "Sagar Choudhary",
+      "format": "On Demand Video + Quiz for Certificate",
+      "lessons": 38,
+      "duration": "22h 10m",
+      "rating": 4.8,
+      "students": 4370,
+      "badge": "BESTSELLER",
+      "description": "GATE CSE ki complete taiyari — Data Structures, Algorithms, OS, DBMS, Computer Networks, TOC aur previous year questions.",
+      "modules": [
+        {
+          "title": "Module 1: Data Structures",
+          "lessons": []
+        },
+        {
+          "title": "Module 2: Algorithms",
+          "lessons": []
+        },
+        {
+          "title": "Module 3: Operating System",
+          "lessons": []
+        },
+        {
+          "title": "Module 4: DBMS",
+          "lessons": []
+        },
+        {
+          "title": "Module 5: Computer Networks",
+          "lessons": []
+        },
+        {
+          "title": "Module 6: Theory of Computation",
+          "lessons": []
+        },
+        {
+          "title": "Module 7: Previous Year Questions",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "title": "Discrete Structure",
+      "subtitle": "Logic, Sets, Relations, Functions, Graph Theory for B.Tech, BCA, MCA and GATE",
+      "category": "Programming",
+      "image": "https://lms.digitalvidyalaya.co.in/images/courses/dis.jpg",
+      "price": 9,
+      "mrp": 499,
+      "language": "Hindi",
+      "trainer": "Sagar Choudhary",
+      "format": "On Demand Video + Quiz for Certificate",
+      "lessons": 20,
+      "duration": "9h 40m",
+      "rating": 4.3,
+      "students": 890,
+      "badge": null,
+      "description": "Logic, Sets, Relations, Functions, Graph Theory aur bahut kuch — B.Tech, BCA, MCA aur GATE ke liye complete course.",
+      "modules": [
+        {
+          "title": "Module 1: Propositional Logic",
+          "lessons": []
+        },
+        {
+          "title": "Module 2: Sets & Relations",
+          "lessons": []
+        },
+        {
+          "title": "Module 3: Functions",
+          "lessons": []
+        },
+        {
+          "title": "Module 4: Graph Theory",
+          "lessons": []
+        },
+        {
+          "title": "Module 5: Group Theory",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "title": "Computer Fundamentals",
+      "subtitle": "Number systems, software, memory, OS, input/output devices",
+      "category": "Programming",
+      "image": "https://lms.digitalvidyalaya.co.in/images/courses/cf.jpg",
+      "price": 9,
+      "mrp": 499,
+      "language": "Hindi",
+      "trainer": "Sagar Choudhary",
+      "format": "On Demand Video + Quiz for Certificate",
+      "lessons": 14,
+      "duration": "5h 40m",
+      "rating": 4.5,
+      "students": 2050,
+      "badge": null,
+      "description": "Computer ke fundamentals — number systems, software, memory, operating systems aur input/output devices. Beginners aur competitive exams dono ke liye.",
+      "modules": [
+        {
+          "title": "Module 1: Introduction to Computers",
+          "lessons": []
+        },
+        {
+          "title": "Module 2: Number Systems",
+          "lessons": []
+        },
+        {
+          "title": "Module 3: Memory & Storage",
+          "lessons": []
+        },
+        {
+          "title": "Module 4: Software & Operating System",
+          "lessons": []
+        },
+        {
+          "title": "Module 5: Input / Output Devices",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": 53,
+      "title": "Engineering Mathematics",
+      "subtitle": "Vector Calculus, Green's, Gauss Divergence and Stoke's Theorem",
+      "category": "Mathematics",
+      "image": "https://lms.digitalvidyalaya.co.in/images/courses/em.jpg",
+      "price": 9,
+      "mrp": 499,
+      "language": "Hindi",
+      "trainer": "Sagar Choudhary",
+      "format": "On Demand Video + Quiz for Certificate",
+      "lessons": 40,
+      "duration": "18h 25m",
+      "rating": 4.7,
+      "students": 1650,
+      "badge": null,
+      "description": "Engineering Mathematics ke fundamentals — Vector Calculus, Green's Theorem, Gauss Divergence Theorem aur Stoke's Theorem, solved examples ke saath.",
+      "modules": [
+        {
+          "title": "Module 1: Vector Differentiation",
+          "lessons": []
+        },
+        {
+          "title": "Module 2: Vector Integration",
+          "lessons": []
+        },
+        {
+          "title": "Module 3: Green's Theorem",
+          "lessons": []
+        },
+        {
+          "title": "Module 4: Gauss Divergence Theorem",
+          "lessons": []
+        },
+        {
+          "title": "Module 5: Stoke's Theorem",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": 54,
+      "title": "UKPSC JE - Electrical Engineering",
+      "subtitle": "Complete Preparation for UKPSC Junior Engineer (Electrical)",
+      "category": "Competitive Exam",
+      "image": "https://lms.digitalvidyalaya.co.in/images/courses/ukpscee.jpg",
+      "price": 9,
+      "mrp": 499,
+      "language": "Hindi",
+      "trainer": "Sagar Choudhary",
+      "format": "On Demand Video + Quiz for Certificate",
+      "lessons": 30,
+      "duration": "16h 35m",
+      "rating": 4.5,
+      "students": 1210,
+      "badge": null,
+      "description": "UKPSC Junior Engineer (Electrical) ki complete taiyari — Basic Electrical, Network Theory, Machines, Power System, Electronics, Measurements, Protection aur Previous Year Questions.",
+      "modules": [
+        {
+          "title": "Module 1: Basic Electrical Engineering",
+          "lessons": []
+        },
+        {
+          "title": "Module 2: Network Theory",
+          "lessons": []
+        },
+        {
+          "title": "Module 3: Electrical Machines",
+          "lessons": []
+        },
+        {
+          "title": "Module 4: Power System",
+          "lessons": []
+        },
+        {
+          "title": "Module 5: Measurements & Protection",
+          "lessons": []
+        },
+        {
+          "title": "Module 6: Previous Year Questions",
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "title": "PGCIL DTE 2026",
+      "subtitle": "Complete Preparation for PGCIL Diploma Trainee (Electrical) 2026",
+      "category": "Competitive Exam",
+      "image": "https://lms.digitalvidyalaya.co.in/images/courses/pgcil.jpg",
+      "price": 9,
+      "mrp": 499,
+      "language": "Hindi",
+      "trainer": "Sagar Choudhary",
+      "format": "On Demand Video + Quiz for Certificate",
+      "lessons": 12,
+      "duration": "8h 20m",
+      "rating": 4.4,
+      "students": 830,
+      "badge": "NEW",
+      "description": "PGCIL Diploma Trainee (Electrical) 2026 ki complete taiyari — Electrical fundamentals, Network Theory, Machines, Power Systems, Measurements, Protection, Electronics, PYQ, Mock Tests aur exam strategy.",
+      "modules": [
+        {
+          "title": "Module 1: Electrical Fundamentals",
+          "lessons": []
+        },
+        {
+          "title": "Module 2: Network Theory",
+          "lessons": []
+        },
+        {
+          "title": "Module 3: Electrical Machines",
+          "lessons": []
+        },
+        {
+          "title": "Module 4: Power Systems",
+          "lessons": []
+        },
+        {
+          "title": "Module 5: Previous Year Questions & Mock Tests",
+          "lessons": []
+        }
+      ]
+    }
+  ]
+}

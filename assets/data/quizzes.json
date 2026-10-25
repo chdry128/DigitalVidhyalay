@@ -1,0 +1,733 @@
+{
+  "_note": "QUIZ — Har course ke 5 sawaal (key = course ka id, courses.json se). answer = sahi option ka number, 0 se shuru (pehla option = 0, doosra = 1 ...). Naya sawaal jodna ho to ek block copy karo. Pass hone ke liye kitne % chahiye: lib/config/app_config.dart → quizPassPercent.",
+  "quizzes": {
+    "1": [
+      {
+        "question": "Java program kis method se start hota hai?",
+        "options": [
+          "run()",
+          "init()",
+          "main()",
+          "start()"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Java me naya object banane ke liye kaunsa keyword use hota hai?",
+        "options": [
+          "new",
+          "create",
+          "class",
+          "this"
+        ],
+        "answer": 0
+      },
+      {
+        "question": "JVM ka full form kya hai?",
+        "options": [
+          "Java Variable Method",
+          "Joint Virtual Memory",
+          "Java Virtual Machine",
+          "Java Visual Mode"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Inme se kaunsa Java ka primitive data type NAHI hai?",
+        "options": [
+          "String",
+          "char",
+          "int",
+          "boolean"
+        ],
+        "answer": 0
+      },
+      {
+        "question": "Ek class doosri class ko inherit karne ke liye kaunsa keyword use karti hai?",
+        "options": [
+          "inherits",
+          "super",
+          "extends",
+          "implements"
+        ],
+        "answer": 2
+      }
+    ],
+    "3": [
+      {
+        "question": "printf() function kis header file me declare hota hai?",
+        "options": [
+          "string.h",
+          "stdlib.h",
+          "stdio.h",
+          "math.h"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "C me har statement ke end me kya lagta hai?",
+        "options": [
+          ",",
+          ".",
+          ":",
+          ";"
+        ],
+        "answer": 3
+      },
+      {
+        "question": "Kisi variable ka address nikalne ke liye kaunsa operator use hota hai?",
+        "options": [
+          "*",
+          "#",
+          "&",
+          "%"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Kaunsa loop kam se kam ek baar zaroor chalta hai?",
+        "options": [
+          "while",
+          "for",
+          "do-while",
+          "Koi nahi"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "int arr[5]; me pehle element ka index kya hai?",
+        "options": [
+          "-1",
+          "0",
+          "1",
+          "5"
+        ],
+        "answer": 1
+      }
+    ],
+    "6": [
+      {
+        "question": "Binary search ki worst-case time complexity kya hai?",
+        "options": [
+          "O(1)",
+          "O(n)",
+          "O(log n)",
+          "O(n log n)"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Merge sort ki worst-case time complexity kya hai?",
+        "options": [
+          "O(log n)",
+          "O(n²)",
+          "O(n log n)",
+          "O(n)"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Inme se kaunsa Divide and Conquer algorithm hai?",
+        "options": [
+          "Bubble sort",
+          "Insertion sort",
+          "Linear search",
+          "Merge sort"
+        ],
+        "answer": 3
+      },
+      {
+        "question": "Dijkstra algorithm kis problem ko solve karta hai?",
+        "options": [
+          "String matching",
+          "Sorting",
+          "Single-source shortest path",
+          "Minimum spanning tree"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Fractional knapsack problem ke liye best approach kaunsi hai?",
+        "options": [
+          "Brute force",
+          "Greedy",
+          "Backtracking",
+          "Dynamic programming"
+        ],
+        "answer": 1
+      }
+    ],
+    "10": [
+      {
+        "question": "Lexical analysis phase ka output kya hota hai?",
+        "options": [
+          "Parse tree",
+          "Tokens",
+          "Machine code",
+          "Intermediate code"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "Parse tree kaunsa phase banata hai?",
+        "options": [
+          "Lexical analyzer",
+          "Syntax analyzer",
+          "Code generator",
+          "Code optimizer"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "LL(1) parser kis type ka parser hai?",
+        "options": [
+          "Top-down",
+          "Operator precedence",
+          "Shift-reduce",
+          "Bottom-up"
+        ],
+        "answer": 0
+      },
+      {
+        "question": "Redundant (bekaar) code hataane ka kaam kaunsa phase karta hai?",
+        "options": [
+          "Linking",
+          "Code optimization",
+          "Lexical analysis",
+          "Parsing"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "Symbol table me kya store hota hai?",
+        "options": [
+          "Machine code",
+          "Identifiers ki information",
+          "Sirf comments",
+          "Error messages"
+        ],
+        "answer": 1
+      }
+    ],
+    "11": [
+      {
+        "question": "Finite automata kaunsi languages accept karta hai?",
+        "options": [
+          "Regular",
+          "Context-sensitive",
+          "Context-free",
+          "Recursively enumerable"
+        ],
+        "answer": 0
+      },
+      {
+        "question": "Pushdown automata (PDA) memory ke liye kya use karta hai?",
+        "options": [
+          "Queue",
+          "Stack",
+          "Tape",
+          "Kuch nahi"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "Context-free languages ko kaunsi machine accept karti hai?",
+        "options": [
+          "Finite automata",
+          "Pushdown automata",
+          "Moore machine",
+          "Mealy machine"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "Language { aⁿbⁿ | n ≥ 0 } kis type ki hai?",
+        "options": [
+          "Regular",
+          "Context-free, lekin regular nahi",
+          "Koi bhi nahi",
+          "Finite"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "Turing machine kaunsi languages recognize karti hai?",
+        "options": [
+          "Recursively enumerable",
+          "Sirf regular",
+          "Sirf context-free",
+          "Sirf finite"
+        ],
+        "answer": 0
+      }
+    ],
+    "21": [
+      {
+        "question": "Page ka metadata (title, meta tags) kis tag me hota hai?",
+        "options": [
+          "<footer>",
+          "<body>",
+          "<head>",
+          "<main>"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Link (hyperlink) banane ke liye kaunsa tag use hota hai?",
+        "options": [
+          "<href>",
+          "<a>",
+          "<nav>",
+          "<link>"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "Image ka alternate text kis attribute me likhte hain?",
+        "options": [
+          "alt",
+          "src",
+          "title",
+          "href"
+        ],
+        "answer": 0
+      },
+      {
+        "question": "Numbered (1, 2, 3) list kis tag se banti hai?",
+        "options": [
+          "<ul>",
+          "<ol>",
+          "<dl>",
+          "<li>"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "Email format check karne wala input type kaunsa hai?",
+        "options": [
+          "text",
+          "mail",
+          "email",
+          "address"
+        ],
+        "answer": 2
+      }
+    ],
+    "22": [
+      {
+        "question": "Text ka rang badalne ke liye kaunsi property hai?",
+        "options": [
+          "text-color",
+          "font-color",
+          "color",
+          "background"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Flexbox layout on karne ke liye kya likhte hain?",
+        "options": [
+          "display: flex",
+          "layout: flex",
+          "position: flex",
+          "flex: on"
+        ],
+        "answer": 0
+      },
+      {
+        "question": "CSS me class selector kis symbol se shuru hota hai?",
+        "options": [
+          "@",
+          "*",
+          ".",
+          "#"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Box model ka sahi order (andar se bahar) kya hai?",
+        "options": [
+          "Content, Margin, Padding, Border",
+          "Margin, Border, Padding, Content",
+          "Content, Padding, Border, Margin",
+          "Padding, Content, Border, Margin"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Screen size ke hisaab se alag CSS lagane ke liye kya use hota hai?",
+        "options": [
+          "Pseudo classes",
+          "Keyframes",
+          "Media queries",
+          "Variables"
+        ],
+        "answer": 2
+      }
+    ],
+    "40": [
+      {
+        "question": "SEO ka full form kya hai?",
+        "options": [
+          "Site Engagement Option",
+          "Search Engine Optimization",
+          "Social Engine Output",
+          "Search Entry Order"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "Marketing me CTA ka matlab kya hai?",
+        "options": [
+          "Call To Action",
+          "Customer Target Area",
+          "Click Track Analysis",
+          "Content To Audience"
+        ],
+        "answer": 0
+      },
+      {
+        "question": "Content calendar kis kaam aata hai?",
+        "options": [
+          "Website ka code likhne",
+          "Content kab aur kahan publish karna hai, plan karne",
+          "Payment lene",
+          "Employees ki chhutti track karne"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "Website / blog ka traffic measure karne ka popular free tool kaunsa hai?",
+        "options": [
+          "Notepad",
+          "MS Paint",
+          "Calculator",
+          "Google Analytics"
+        ],
+        "answer": 3
+      },
+      {
+        "question": "Evergreen content kise kehte hain?",
+        "options": [
+          "Jo sirf ek din chale",
+          "Sirf video content",
+          "Hare rang ka content",
+          "Jo lambe samay tak useful rahe"
+        ],
+        "answer": 3
+      }
+    ],
+    "49": [
+      {
+        "question": "Kaunsa data structure FIFO (First In First Out) follow karta hai?",
+        "options": [
+          "Graph",
+          "Tree",
+          "Stack",
+          "Queue"
+        ],
+        "answer": 3
+      },
+      {
+        "question": "Partial dependency hataane wala normal form kaunsa hai?",
+        "options": [
+          "1NF",
+          "2NF",
+          "BCNF",
+          "3NF"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "IP packets ki routing OSI model ki kis layer me hoti hai?",
+        "options": [
+          "Network",
+          "Session",
+          "Transport",
+          "Data link"
+        ],
+        "answer": 0
+      },
+      {
+        "question": "Kaunsi CPU scheduling me starvation ho sakti hai?",
+        "options": [
+          "FCFS",
+          "Round Robin",
+          "Priority scheduling",
+          "Inme se koi nahi"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "n vertices wale tree me kitne edges hote hain?",
+        "options": [
+          "n + 1",
+          "n",
+          "2n",
+          "n - 1"
+        ],
+        "answer": 3
+      }
+    ],
+    "51": [
+      {
+        "question": "Implication p → q kab FALSE hota hai?",
+        "options": [
+          "p false, q false",
+          "p true, q false",
+          "p true, q true",
+          "p false, q true"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "Set {1, 2, 3} ke kitne subsets hain?",
+        "options": [
+          "8",
+          "9",
+          "3",
+          "6"
+        ],
+        "answer": 0
+      },
+      {
+        "question": "Jo relation reflexive, symmetric aur transitive ho, use kya kehte hain?",
+        "options": [
+          "Function",
+          "Partial order",
+          "Equivalence relation",
+          "Lattice"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Graph me saare vertices ki degree ka total kitna hota hai?",
+        "options": [
+          "Vertices ke barabar",
+          "Edges ke barabar",
+          "Edges − 1",
+          "2 × edges"
+        ],
+        "answer": 3
+      },
+      {
+        "question": "Bijective function kaisa hota hai?",
+        "options": [
+          "One-one aur onto dono",
+          "Na one-one, na onto",
+          "Sirf onto",
+          "Sirf one-one"
+        ],
+        "answer": 0
+      }
+    ],
+    "52": [
+      {
+        "question": "CPU ka full form kya hai?",
+        "options": [
+          "Control Processing Unit",
+          "Central Program Utility",
+          "Computer Personal Unit",
+          "Central Processing Unit"
+        ],
+        "answer": 3
+      },
+      {
+        "question": "Decimal 10 ko binary me kya likhte hain?",
+        "options": [
+          "1100",
+          "1010",
+          "1110",
+          "1001"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "Kaunsi memory volatile hai (power jaate hi data chala jata hai)?",
+        "options": [
+          "ROM",
+          "Hard disk",
+          "Pen drive",
+          "RAM"
+        ],
+        "answer": 3
+      },
+      {
+        "question": "Inme se input device kaunsa hai?",
+        "options": [
+          "Speaker",
+          "Monitor",
+          "Printer",
+          "Keyboard"
+        ],
+        "answer": 3
+      },
+      {
+        "question": "1 KB me kitne bytes hote hain?",
+        "options": [
+          "512",
+          "1000",
+          "1024",
+          "2048"
+        ],
+        "answer": 2
+      }
+    ],
+    "53": [
+      {
+        "question": "Vector field ka divergence kya deta hai?",
+        "options": [
+          "Tensor",
+          "Vector",
+          "Matrix",
+          "Scalar"
+        ],
+        "answer": 3
+      },
+      {
+        "question": "curl (grad φ) ki value kya hoti hai?",
+        "options": [
+          "φ",
+          "1",
+          "0 (zero vector)",
+          "grad φ"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Gauss Divergence Theorem kin do integrals ko jodta hai?",
+        "options": [
+          "Surface aur volume integral",
+          "Line aur surface integral",
+          "Line aur volume integral",
+          "Do line integrals"
+        ],
+        "answer": 0
+      },
+      {
+        "question": "Stoke's Theorem kin do integrals ko jodta hai?",
+        "options": [
+          "Line aur volume integral",
+          "Surface aur volume integral",
+          "Do volume integrals",
+          "Line aur surface integral"
+        ],
+        "answer": 3
+      },
+      {
+        "question": "Green's Theorem kahan apply hota hai?",
+        "options": [
+          "Plane (2D region) me",
+          "Sirf circle pe",
+          "Sirf sphere pe",
+          "3D space me"
+        ],
+        "answer": 0
+      }
+    ],
+    "54": [
+      {
+        "question": "Resistance ki SI unit kya hai?",
+        "options": [
+          "Ohm",
+          "Watt",
+          "Ampere",
+          "Volt"
+        ],
+        "answer": 0
+      },
+      {
+        "question": "Transformer kis supply pe kaam karta hai?",
+        "options": [
+          "Sirf AC",
+          "Sirf DC",
+          "AC aur DC dono",
+          "Kisi pe nahi"
+        ],
+        "answer": 0
+      },
+      {
+        "question": "Pure resistive circuit ka power factor kitna hota hai?",
+        "options": [
+          "0.5",
+          "0",
+          "1",
+          "Infinity"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Kirchhoff's Current Law (KCL) kahan apply hota hai?",
+        "options": [
+          "Source",
+          "Loop",
+          "Resistor",
+          "Node"
+        ],
+        "answer": 3
+      },
+      {
+        "question": "Inductance ki unit kya hai?",
+        "options": [
+          "Weber",
+          "Tesla",
+          "Farad",
+          "Henry"
+        ],
+        "answer": 3
+      }
+    ],
+    "55": [
+      {
+        "question": "Electrical power ki unit kya hai?",
+        "options": [
+          "Joule",
+          "Coulomb",
+          "Watt",
+          "Volt"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Synchronous speed ka formula kya hai?",
+        "options": [
+          "Ns = f / P",
+          "Ns = 60P / f",
+          "Ns = 120f / P",
+          "Ns = 120P / f"
+        ],
+        "answer": 2
+      },
+      {
+        "question": "Overcurrent se circuit ko bachane ke liye kya use hota hai?",
+        "options": [
+          "Transformer",
+          "Fuse",
+          "Capacitor",
+          "Inductor"
+        ],
+        "answer": 1
+      },
+      {
+        "question": "Ohm's law kya hai?",
+        "options": [
+          "V = I / R",
+          "V = I + R",
+          "V = R / I",
+          "V = IR"
+        ],
+        "answer": 3
+      },
+      {
+        "question": "India me power supply ki frequency kitni hai?",
+        "options": [
+          "50 Hz",
+          "100 Hz",
+          "60 Hz",
+          "25 Hz"
+        ],
+        "answer": 0
+      }
+    ]
+  }
+}

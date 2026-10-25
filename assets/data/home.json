@@ -1,0 +1,84 @@
+{
+  "_note": "HOME SCREEN — Banners (upar wali slide), onboarding slides, stats aur notifications yahan se badlein. Banner action: courses / internships / counselling. image me internet ka photo link daal sakte ho. Notification icon: course / offer / quiz / certificate / internship.",
+  "banners": [
+    {
+      "tag": "LIMITED TIME OFFER",
+      "title": "Har course sirf ₹9",
+      "subtitle": "31 October 2026 tak · Video + Quiz + Certificate",
+      "button": "Explore courses",
+      "action": "courses"
+    },
+    {
+      "tag": "EARN WHILE YOU LEARN",
+      "title": "Stipend internship ₹1,000/week",
+      "subtitle": "Digital Marketing, Outreach aur ERP Operations",
+      "button": "View internships",
+      "action": "internships"
+    },
+    {
+      "tag": "FREE",
+      "title": "University admission counselling",
+      "subtitle": "Sahi college aur course chunne me madad",
+      "button": "Talk on WhatsApp",
+      "action": "counselling"
+    }
+  ],
+  "onboarding": [
+    {
+      "title": "Seekho, apni bhasha mein",
+      "text": "Industry-ready courses, simple Hindi explanation ke saath — sirf ₹9 se shuru.",
+      "image": "https://images.unsplash.com/photo-1637589308599-3478cc55510d?auto=format&fit=crop&w=900&q=80"
+    },
+    {
+      "title": "Internship se experience",
+      "text": "Live projects, mentor tasks aur work experience certificate — resume ke liye.",
+      "image": "https://images.unsplash.com/photo-1675664532493-ab9f3e5ed1ea?auto=format&fit=crop&w=900&q=80"
+    },
+    {
+      "title": "Certificate ke saath",
+      "text": "Quiz pass karo aur verified certificate pao, jise koi bhi online verify kar sake.",
+      "image": "https://images.unsplash.com/photo-1716471453667-94383b1e4859?auto=format&fit=crop&w=900&q=80"
+    }
+  ],
+  "stats": [
+    {
+      "value": "5,000+",
+      "label": "Students trained"
+    },
+    {
+      "value": "50+",
+      "label": "Courses"
+    },
+    {
+      "value": "50+",
+      "label": "University partners"
+    }
+  ],
+  "counsellingMessage": "Hello Digital Vidyalaya, mujhe university admission ke liye free counselling chahiye.",
+  "notifications": [
+    {
+      "title": "Offer: har course sirf ₹9",
+      "body": "Yeh offer 31 October 2026 tak hai. Abhi enroll karein.",
+      "time": "Aaj",
+      "icon": "offer"
+    },
+    {
+      "title": "Naya course: PGCIL DTE 2026",
+      "body": "PGCIL Diploma Trainee (Electrical) ki complete taiyari ab app me.",
+      "time": "2 din pehle",
+      "icon": "course"
+    },
+    {
+      "title": "Stipend internship open",
+      "body": "Digital Marketing aur ERP Operations me ₹1,000/week stipend.",
+      "time": "3 din pehle",
+      "icon": "internship"
+    },
+    {
+      "title": "Quiz do, certificate pao",
+      "body": "Course ke saare lessons complete karke quiz dein aur verified certificate download karein.",
+      "time": "1 hafta pehle",
+      "icon": "certificate"
+    }
+  ]
+}

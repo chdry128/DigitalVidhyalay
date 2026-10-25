@@ -1,0 +1,51 @@
+# ============================================================
+#  pubspec.yaml — App ka naam, version aur packages.
+#
+#  Naya version Play Store / sir ke phone pe bhejna ho to
+#  "version" badhayein:  1.0.0+1  ->  1.0.1+2
+#  (+ ke baad wala number har release me 1 badhna zaroori hai)
+# ============================================================
+name: digital_vidyalaya
+description: Digital Vidyalaya student app — courses, internships, certificates.
+publish_to: "none"
+
+version: 1.0.1+2
+
+environment:
+  sdk: ">=3.5.0 <4.0.0" # Flutter 3.24 ya usse naya chahiye
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.1.2 # App ka data (state) saari screens tak pahunchata hai
+  shared_preferences: ^2.3.2 # Phone me chhota data save karta hai (login, profile)
+  google_fonts: ^6.2.1 # "Plus Jakarta Sans" font
+  url_launcher: ^6.3.0 # Call, WhatsApp, email, website kholne ke liye
+  youtube_player_iframe: ^5.2.0 # App ke andar YouTube video (API key nahi chahiye)
+  qr_flutter: ^4.1.0 # Certificate pe QR code
+  pdf: ^3.11.0 # Certificate ki PDF banana
+  printing: ^5.13.0 # PDF save / print / share karna
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.1 # Logo se app ka icon banata hai
+
+# App icon (phone ki home screen pe). Logo badla? Yeh command chalao:
+#   dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/app_icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
+
+flutter:
+  uses-material-design: true
+
+  # Images aur JSON data yahan register hote hain.
+  # Folder ke andar nayi file daalo — yahan kuch badalne ki zaroorat nahi.
+  assets:
+    - assets/images/
+    - assets/data/
