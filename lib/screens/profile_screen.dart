@@ -15,6 +15,7 @@ import '../utils/launcher.dart';
 import '../widgets/app_card.dart';
 import 'login_screen.dart';
 import 'my_certificates_screen.dart';
+import 'offer_letters_screen.dart';
 import 'payment_history_screen.dart';
 import 'profile_setup_screen.dart';
 import 'verify_certificate_screen.dart';
@@ -196,6 +197,13 @@ class ProfileScreen extends StatelessWidget {
                   label: 'My Certificates',
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute<void>(builder: (_) => const MyCertificatesScreen()),
+                  ),
+                ),
+                _MenuItem(
+                  icon: Icons.mark_email_read_outlined,
+                  label: 'Offer Letters',
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(builder: (_) => const OfferLettersScreen()),
                   ),
                 ),
                 _MenuItem(

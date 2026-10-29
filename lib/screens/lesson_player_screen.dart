@@ -15,12 +15,10 @@ import '../config/app_colors.dart';
 import '../config/app_theme.dart';
 import '../data/models/certificate.dart';
 import '../data/models/course.dart';
-import '../data/models/payment.dart';
 import '../state/app_state.dart';
 import '../widgets/app_card.dart';
 import '../utils/launcher.dart';
 import 'certificate_screen.dart';
-import 'payment_screen.dart';
 import 'quiz_screen.dart';
 
 class LessonPlayerScreen extends StatefulWidget {
@@ -106,11 +104,7 @@ class _LessonPlayerScreenState extends State<LessonPlayerScreen> {
   }
 
   void _enroll() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(
-        builder: (_) => PaymentScreen(item: PurchaseItem.fromCourse(widget.course)),
-      ),
-    );
+    showWebsitePurchaseDialog(context);
   }
 
   @override

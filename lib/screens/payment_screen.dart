@@ -4,17 +4,14 @@
 //  ⚠ DEMO: Abhi asli paisa nahi katta. "Pay" dabane pe 2 second
 //  ruk kar seedha success. Backend ke time yahan Razorpay lagega
 //  (sirf _pay() function badalna hoga).
-// ============================================================
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../config/app_colors.dart';
 import '../config/app_config.dart';
 import '../config/app_theme.dart';
 import '../data/models/payment.dart';
-import '../state/app_state.dart';
+import '../utils/launcher.dart';
 import '../widgets/app_card.dart';
-import 'payment_success_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key, required this.item});
@@ -36,7 +33,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   final TextEditingController _coupon = TextEditingController();
   String _method = 'UPI';
   String? _couponMessage;
-  bool _processing = false;
+  final bool _processing = false;
 
   @override
   void dispose() {
@@ -52,17 +49,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Future<void> _pay() async {
-    setState(() => _processing = true);
-    final AppState state = context.read<AppState>();
-
-    // DEMO: thoda ruko (jaise payment ho raha ho)
-    await Future<void>.delayed(const Duration(milliseconds: AppConfig.demoPaymentDelayMs));
-    final PaymentRecord record = await state.completePurchase(widget.item, _method);
-    if (!mounted) return;
-
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(builder: (_) => PaymentSuccessScreen(record: record)),
-    );
+    showWebsitePurchaseDialog(context);
   }
 
   @override

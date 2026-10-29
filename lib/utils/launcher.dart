@@ -62,3 +62,30 @@ Future<void> openLink(BuildContext context, String url) {
 Future<void> openYouTube(BuildContext context, String videoId) {
   return _open(context, Uri.parse('https://www.youtube.com/watch?v=$videoId'));
 }
+
+/// Simple Website Purchase Redirect Dialog
+Future<void> showWebsitePurchaseDialog(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext dialogContext) {
+      return AlertDialog(
+        content: const Text(
+          'Please purchase this course on our website, then return to the app.',
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              openLink(context, 'https://www.digitalvidyalaya.co.in/');
+            },
+            child: const Text('Open Website'),
+          ),
+        ],
+      );
+    },
+  );
+}

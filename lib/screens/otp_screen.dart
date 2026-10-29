@@ -1,8 +1,8 @@
 // ============================================================
-//  OTP SCREEN — 4-digit OTP verify
+//  OTP SCREEN — Email pe aaya 6-digit code verify karo
 //
-//  Demo me OTP hamesha AppConfig.demoOtp (1234) hai.
-//  Backend lagne ke baad asli SMS wala OTP chalega.
+//  Register ke baad yahan aata hai.
+//  OTP enter karo → verify → Profile setup → Main app
 // ============================================================
 import 'dart:async';
 
@@ -18,25 +18,27 @@ import 'main_shell.dart';
 import 'profile_setup_screen.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key, required this.phone});
+  const OtpScreen({super.key, required this.email});
 
-  final String phone;
+  final String email;
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  static const int _otpLength = 4;
-  static const int _resendSeconds = 30;
+  static const int _otpLength     = 6;
+  static const int _resendSeconds = 60;
 
   final List<TextEditingController> _controllers =
-      List<TextEditingController>.generate(_otpLength, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List<FocusNode>.generate(_otpLength, (_) => FocusNode());
+      List<TextEditingController>.generate(
+          _otpLength, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes =
+      List<FocusNode>.generate(_otpLength, (_) => FocusNode());
 
   Timer? _timer;
-  int _secondsLeft = _resendSeconds;
-  bool _verifying = false;
+  int  _secondsLeft = _resendSeconds;
+  bool _verifying   = false;
   String? _error;
 
   String get _otp => _controllers.map((c) => c.text).join();
@@ -45,18 +47,15 @@ class _OtpScreenState extends State<OtpScreen> {
   void initState() {
     super.initState();
     _startTimer();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _focusNodes.first.requestFocus());
+    WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _focusNodes.first.requestFocus());
   }
 
   @override
   void dispose() {
     _timer?.cancel();
-    for (final TextEditingController c in _controllers) {
-      c.dispose();
-    }
-    for (final FocusNode f in _focusNodes) {
-      f.dispose();
-    }
+    for (final c in _controllers) { c.dispose(); }
+    for (final f in _focusNodes)   { f.dispose(); }
     super.dispose();
   }
 
@@ -77,52 +76,53 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   Future<void> _resend() async {
-    await context.read<AppState>().repository.sendOtp(widget.phone);
-    if (!mounted) return;
-    setState(_startTimer);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('OTP dobara bhej diya gaya')),
-    );
+    setState(() { _error = null; });
+    try {
+      await context.read<AppState>().resendOtp(email: widget.email);
+      if (!mounted) return;
+      setState(_startTimer);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('OTP dobara bhej diya gaya')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Resend fail: $e')),
+      );
+    }
   }
 
   void _clearBoxes() {
-    for (final TextEditingController c in _controllers) {
-      c.clear();
-    }
+    for (final c in _controllers) { c.clear(); }
     _focusNodes.first.requestFocus();
   }
 
   Future<void> _verify() async {
     if (_verifying || _otp.length != _otpLength) return;
-    setState(() {
-      _verifying = true;
-      _error = null;
-    });
+    setState(() { _verifying = true; _error = null; });
 
-    final AppState state = context.read<AppState>();
-    final bool ok = await state.repository.verifyOtp(widget.phone, _otp);
-    if (!mounted) return;
+    final state = context.read<AppState>();
 
-    if (!ok) {
+    try {
+      await state.verifyOtp(email: widget.email, otp: _otp);
+      if (!mounted) return;
+
+      final Widget next =
+          state.isLoggedIn ? const MainShell() : const ProfileSetupScreen();
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute<void>(builder: (_) => next),
+        (route) => false,
+      );
+    } catch (e) {
+      if (!mounted) return;
       setState(() {
         _verifying = false;
-        _error = AppConfig.useMockData
-            ? 'Galat OTP. Demo ke liye ${AppConfig.demoOtp} daalein.'
-            : 'Galat OTP. Dobara try karein.';
+        _error = e.toString()
+            .replaceFirst('ApiException(400): ', '')
+            .replaceFirst('Exception: ', '');
       });
       _clearBoxes();
-      return;
     }
-
-    await state.loginWithPhone(widget.phone);
-    if (!mounted) return;
-
-    // Profile pehle se bani hai → seedha app, warna profile setup
-    final Widget next = state.isLoggedIn ? const MainShell() : const ProfileSetupScreen();
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute<void>(builder: (_) => next),
-      (route) => false,
-    );
   }
 
   void _onDigitChanged(int index, String value) {
@@ -132,7 +132,7 @@ class _OtpScreenState extends State<OtpScreen> {
       _focusNodes[index - 1].requestFocus();
     }
     setState(() => _error = null);
-    if (_otp.length == _otpLength) _verify(); // 4 digit poore → apne aap verify
+    if (_otp.length == _otpLength) _verify();
   }
 
   @override
@@ -149,18 +149,23 @@ class _OtpScreenState extends State<OtpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Check your messages', style: AppText.h1),
+              const Text('Check your inbox', style: AppText.h1),
               const SizedBox(height: 6),
-              Text('OTP bheja gaya: +91 ${widget.phone}', style: AppText.muted),
+              Text(
+                '6-digit code bheja gaya:\n${widget.email}',
+                style: AppText.muted,
+              ),
               const SizedBox(height: 32),
+
+              // ── 6 OTP boxes ──
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List<Widget>.generate(_otpLength, (index) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: SizedBox(
-                      width: 56,
-                      height: 60,
+                      width: 46,
+                      height: 56,
                       child: TextField(
                         controller: _controllers[index],
                         focusNode: _focusNodes[index],
@@ -170,28 +175,35 @@ class _OtpScreenState extends State<OtpScreen> {
                         expands: true,
                         maxLines: null,
                         maxLength: 1,
-                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w700),
                         decoration: const InputDecoration(
                           counterText: '',
                           contentPadding: EdgeInsets.zero,
                         ),
-                        onChanged: (value) => _onDigitChanged(index, value),
+                        onChanged: (value) =>
+                            _onDigitChanged(index, value),
                       ),
                     ),
                   );
                 }),
               ),
+
               if (_error != null) ...[
                 const SizedBox(height: 14),
                 Center(
                   child: Text(
                     _error!,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: AppColors.error, fontSize: 13),
+                    style: const TextStyle(
+                        color: AppColors.error, fontSize: 13),
                   ),
                 ),
               ],
+
               const SizedBox(height: 20),
               Center(
                 child: _secondsLeft > 0
@@ -199,39 +211,55 @@ class _OtpScreenState extends State<OtpScreen> {
                         'Resend OTP in 0:${_secondsLeft.toString().padLeft(2, '0')}',
                         style: AppText.muted,
                       )
-                    : TextButton(onPressed: _resend, child: const Text('Resend OTP')),
+                    : TextButton(
+                        onPressed: _resend,
+                        child: const Text('Resend OTP'),
+                      ),
               ),
               const SizedBox(height: 20),
+
               ElevatedButton(
-                onPressed: _otp.length == _otpLength && !_verifying ? _verify : null,
+                onPressed:
+                    _otp.length == _otpLength && !_verifying ? _verify : null,
                 child: _verifying
                     ? const SizedBox(
                         width: 20,
                         height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white),
                       )
                     : const Text('Verify & Continue'),
               ),
+
               if (AppConfig.useMockData) ...[
                 const SizedBox(height: 20),
                 Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
                       color: AppColors.primaryLight,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Text(
-                      'Demo version · OTP: ${AppConfig.demoOtp}',
+                      'Demo mode · OTP: 123456 ya 1234',
                       style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                          fontSize: 12,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600),
                     ),
                   ),
                 ),
               ],
+
+              const SizedBox(height: 20),
+              const Center(
+                child: Text(
+                  'Spam folder bhi check karein agar email nahi mila.',
+                  textAlign: TextAlign.center,
+                  style: AppText.tiny,
+                ),
+              ),
             ],
           ),
         ),

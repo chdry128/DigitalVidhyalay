@@ -1,9 +1,13 @@
 // ============================================================
 //  COURSE MODEL — Ek course me kya-kya information hoti hai
 //
-//  courses.json ki har field yahan ek variable hai.
-//  JSON me nayi field jodni ho to:
-//   1. Yahan variable jodo   2. fromJson me padhne ki line jodo
+//  2 constructors:
+//   • fromJson      → assets/data/courses.json (mock)
+//   • fromApiJson   → catalog/courses.php (backend)
+//
+//  Backend field names:
+//    course_id, course_name, course_category, course_description,
+//    course_duration, course_fee, thumbnail_url
 // ============================================================
 import '../../config/app_config.dart';
 
@@ -13,16 +17,16 @@ class Course {
   final String subtitle;
   final String category;
   final String imageUrl;
-  final int price; // Rupees me, e.g. 9
-  final int mrp; // Kata hua (original) price, 0 = mat dikhao
+  final int price;     // Rupees
+  final int mrp;       // Original price (0 = don't show)
   final String language;
   final String trainer;
-  final String format; // e.g. "On Demand Video + Quiz for Certificate"
+  final String format;
   final int lessons;
   final String duration;
-  final double rating; // 0 = rating mat dikhao
-  final int students; // 0 = students mat dikhao
-  final String? badge; // "BESTSELLER", "NEW" ya null
+  final double rating; // 0 = don't show
+  final int students;  // 0 = don't show
+  final String? badge; // "BESTSELLER", "NEW", null
   final String description;
   final List<CourseModule> modules;
 
@@ -46,8 +50,10 @@ class Course {
     required this.modules,
   });
 
+  // ── Mock JSON (assets/data/courses.json) ───────────────────
   factory Course.fromJson(Map<String, dynamic> json) {
-    final List<dynamic> moduleList = (json['modules'] as List<dynamic>?) ?? <dynamic>[];
+    final List<dynamic> moduleList =
+        (json['modules'] as List<dynamic>?) ?? <dynamic>[];
     return Course(
       id: json['id'] as int,
       title: json['title'] as String,
@@ -71,22 +77,42 @@ class Course {
     );
   }
 
-  bool get isFree => price == 0;
+  // ── Real API (catalog/courses.php) ─────────────────────────
+  // Backend fields: course_id, course_name, course_category,
+  //   course_description, course_duration, course_fee, thumbnail_url
+  factory Course.fromApiJson(Map<String, dynamic> json) {
+    final fee = (json['course_fee'] as num?)?.toInt() ?? 0;
+    return Course(
+      id: (json['course_id'] as num?)?.toInt() ?? 0,
+      title: (json['course_name'] as String?) ?? 'Untitled',
+      subtitle: '',
+      category: (json['course_category'] as String?) ?? 'Other',
+      imageUrl: (json['thumbnail_url'] as String?) ?? '',
+      price: fee,
+      mrp: 0,
+      language: 'Hindi',
+      trainer: AppConfig.defaultTrainer,
+      format: 'On Demand Video + Quiz for Certificate',
+      lessons: 0,
+      duration: (json['course_duration'] as String?) ?? '',
+      rating: 0,
+      students: 0,
+      badge: null,
+      description: (json['course_description'] as String?) ?? '',
+      modules: const [],
+    );
+  }
 
-  /// "₹9" ya "FREE"
+  bool get isFree => price == 0;
   String get priceLabel => isFree ? 'FREE' : '₹$price';
 
-  /// Kitna % discount hai (mrp ke hisaab se)
   int get discountPercent {
     if (mrp <= price || mrp == 0) return 0;
     return (((mrp - price) / mrp) * 100).round();
   }
 
-  /// Video player ke liye saare lessons ek line me (module ke order me).
-  /// Agar kisi module me lessons nahi likhe, to module khud ek lesson
-  /// ban jata hai — taaki har course me video chale.
+  /// Video player ke liye saare lessons (module ke order me)
   List<PlaylistItem> get playlist {
-    // Course me ek bhi module nahi → ek intro lesson (taaki player kabhi khaali na ho)
     if (modules.isEmpty) {
       return [
         PlaylistItem(
@@ -129,6 +155,7 @@ class Course {
   }
 }
 
+// ─────────────────────────────────────────────────────────────
 class CourseModule {
   final String title;
   final List<Lesson> lessons;
@@ -136,7 +163,8 @@ class CourseModule {
   const CourseModule({required this.title, required this.lessons});
 
   factory CourseModule.fromJson(Map<String, dynamic> json) {
-    final List<dynamic> lessonList = (json['lessons'] as List<dynamic>?) ?? <dynamic>[];
+    final List<dynamic> lessonList =
+        (json['lessons'] as List<dynamic>?) ?? <dynamic>[];
     return CourseModule(
       title: json['title'] as String,
       lessons: lessonList.map(Lesson.fromJson).toList(),
@@ -144,15 +172,14 @@ class CourseModule {
   }
 }
 
-/// Ek lesson. JSON me 2 tarah likh sakte ho:
-///   "What is Java"                                        ← sirf naam
-///   { "title": "What is Java", "videoId": "OzIjZAIy6Cc", "duration": "9:20" }
+// ─────────────────────────────────────────────────────────────
 class Lesson {
   final String title;
-  final String? videoId; // YouTube video ID. null = AppConfig.demoVideoId chalega
+  final String? videoId; // YouTube video ID
   final String duration; // e.g. "9:20"
 
-  const Lesson({required this.title, required this.videoId, required this.duration});
+  const Lesson(
+      {required this.title, required this.videoId, required this.duration});
 
   factory Lesson.fromJson(dynamic json) {
     if (json is Map<String, dynamic>) {
@@ -167,10 +194,10 @@ class Lesson {
   }
 }
 
-/// Video player ki list ka ek item
+// ─────────────────────────────────────────────────────────────
 class PlaylistItem {
-  final String key; // Progress save karne ki unique pehchaan, e.g. "1_0_2"
-  final int index; // 0 se shuru
+  final String key; // Unique progress key, e.g. "1_0_2"
+  final int index;
   final String title;
   final String moduleTitle;
   final String duration;
@@ -185,6 +212,5 @@ class PlaylistItem {
     required this.videoId,
   });
 
-  /// Pehla lesson sabke liye free (preview)
   bool get isFree => index == 0;
 }

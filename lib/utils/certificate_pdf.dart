@@ -22,12 +22,12 @@ Future<Uint8List> buildCertificatePdf(CertificateRecord record) async {
   final pw.MemoryImage logo = pw.MemoryImage(logoData.buffer.asUint8List());
 
   // Rang (app_colors.dart jaise hi)
-  final PdfColor navy = PdfColor.fromInt(0xFF011E60);
-  final PdfColor orange = PdfColor.fromInt(0xFFEA580C);
-  final PdfColor grey = PdfColor.fromInt(0xFF78716C);
-  final PdfColor dark = PdfColor.fromInt(0xFF1C1917);
+  const PdfColor navy = PdfColor.fromInt(0xFF011E60);
+  const PdfColor orange = PdfColor.fromInt(0xFFEA580C);
+  const PdfColor grey = PdfColor.fromInt(0xFF78716C);
+  const PdfColor dark = PdfColor.fromInt(0xFF1C1917);
 
-  final pw.TextStyle small = pw.TextStyle(fontSize: 10, color: grey);
+  const pw.TextStyle small = pw.TextStyle(fontSize: 10, color: grey);
 
   final pw.Document doc = pw.Document(
     title: 'Certificate ${record.id}',
@@ -50,7 +50,7 @@ Future<Uint8List> buildCertificatePdf(CertificateRecord record) async {
               pw.SizedBox(height: 6),
               pw.Text(
                 'DIGITAL VIDYALAYA',
-                style: pw.TextStyle(
+                style: const pw.TextStyle(
                   color: navy,
                   fontSize: 13,
                   fontWeight: pw.FontWeight.bold,
@@ -63,18 +63,18 @@ Future<Uint8List> buildCertificatePdf(CertificateRecord record) async {
                 style: pw.TextStyle(font: pw.Font.timesBold(), fontSize: 30, color: navy),
               ),
               pw.SizedBox(height: 14),
-              pw.Text('This is proudly presented to', style: pw.TextStyle(fontSize: 13, color: grey)),
+              pw.Text('This is proudly presented to', style: const pw.TextStyle(fontSize: 13, color: grey)),
               pw.SizedBox(height: 8),
               pw.Text(
                 record.studentName,
                 style: pw.TextStyle(font: pw.Font.timesBold(), fontSize: 32, color: dark),
               ),
               pw.Container(width: 300, height: 1.5, color: orange, margin: const pw.EdgeInsets.only(top: 4, bottom: 10)),
-              pw.Text(record.achievementLine, style: pw.TextStyle(fontSize: 13, color: grey)),
+              pw.Text(record.achievementLine, style: const pw.TextStyle(fontSize: 13, color: grey)),
               pw.SizedBox(height: 6),
               pw.Text(
                 record.title,
-                style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold, color: dark),
+                style: const pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold, color: dark),
               ),
               if (record.scorePercent != null) ...[
                 pw.SizedBox(height: 4),
@@ -90,10 +90,10 @@ Future<Uint8List> buildCertificatePdf(CertificateRecord record) async {
                     child: pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
-                        pw.Text(record.dateLabel, style: pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold)),
+                        pw.Text(record.dateLabel, style: const pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold)),
                         pw.Text('Date of issue', style: small),
                         pw.SizedBox(height: 8),
-                        pw.Text(record.id, style: pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold)),
+                        pw.Text(record.id, style: const pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold)),
                         pw.Text('Certificate ID', style: small),
                       ],
                     ),

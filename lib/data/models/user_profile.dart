@@ -1,21 +1,62 @@
 // ============================================================
 //  USER PROFILE — Login kiye hue student ki details
+//
+//  Backend ke users table ke saath match karta hai:
+//   id, full_name, email, phone, college_name
 // ============================================================
 
 class UserProfile {
+  final int id;           // Database users.id
   final String phone;
-  final String name;
+  final String name;      // full_name
   final String email;
-  final String college;
+  final String college;   // college_name
   final String city;
+  final String? avatarUrl; // profile_pic URL (server se)
 
   const UserProfile({
+    required this.id,
     required this.phone,
     required this.name,
     required this.email,
     required this.college,
     required this.city,
+    this.avatarUrl,
   });
+
+  /// Server se aaye JSON se banana
+  factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
+        id: (json['id'] as num?)?.toInt() ?? 0,
+        phone: (json['phone'] as String?) ?? '',
+        name: (json['full_name'] as String?) ?? '',
+        email: (json['email'] as String?) ?? '',
+        college: (json['college_name'] as String?) ?? '',
+        city: '',
+        avatarUrl: json['avatar_url'] as String?,
+      );
+
+  /// SharedPreferences ke liye flat Map
+  Map<String, dynamic> toPrefsMap() => {
+        'id': id,
+        'phone': phone,
+        'name': name,
+        'email': email,
+        'college': college,
+        'city': city,
+        'avatarUrl': avatarUrl ?? '',
+      };
+
+  factory UserProfile.fromPrefsMap(Map<String, dynamic> m) => UserProfile(
+        id: (m['id'] as int?) ?? 0,
+        phone: (m['phone'] as String?) ?? '',
+        name: (m['name'] as String?) ?? '',
+        email: (m['email'] as String?) ?? '',
+        college: (m['college'] as String?) ?? '',
+        city: (m['city'] as String?) ?? '',
+        avatarUrl: (m['avatarUrl'] as String?)?.isEmpty == true
+            ? null
+            : m['avatarUrl'] as String?,
+      );
 
   /// "Rahul Kumar" → "Rahul"
   String get firstName {
@@ -36,13 +77,22 @@ class UserProfile {
   /// Profile setup poora hua ya nahi
   bool get isComplete => name.trim().isNotEmpty;
 
-  UserProfile copyWith({String? name, String? email, String? college, String? city}) {
+  UserProfile copyWith({
+    String? name,
+    String? email,
+    String? phone,
+    String? college,
+    String? city,
+    String? avatarUrl,
+  }) {
     return UserProfile(
-      phone: phone,
+      id: id,
+      phone: phone ?? this.phone,
       name: name ?? this.name,
       email: email ?? this.email,
       college: college ?? this.college,
       city: city ?? this.city,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
     );
   }
 }

@@ -1,8 +1,9 @@
 // ============================================================
 //  APP STATE — App ka "dimaag"
 //
-//  • Data load karna (courses, internships, home)
-//  • Login / profile / logout
+//  • Data load karna (courses, internships, home) — ab PHP server se
+//  • Login / register / OTP verify / logout
+//  • JWT token manage karna
 //  • Phone me save karna (app band karke kholne pe bhi yaad rahe)
 //
 //  Koi bhi screen isse data aise leti hai:
@@ -19,9 +20,12 @@ import '../data/models/certificate.dart';
 import '../data/models/course.dart';
 import '../data/models/home_data.dart';
 import '../data/models/internship.dart';
+import '../data/models/offer_letter.dart';
 import '../data/models/payment.dart';
 import '../data/models/quiz.dart';
 import '../data/models/user_profile.dart';
+import '../data/models/workspace_data.dart';
+import '../data/repository/api_client.dart';
 import '../data/repository/app_repository.dart';
 
 class AppState extends ChangeNotifier {
@@ -29,78 +33,105 @@ class AppState extends ChangeNotifier {
 
   final AppRepository repository;
 
-  // ---------- Phone me save hone wali keys ----------
-  static const String _kOnboardingSeen = 'onboarding_seen';
-  static const String _kPhone = 'user_phone';
-  static const String _kName = 'user_name';
-  static const String _kEmail = 'user_email';
-  static const String _kCollege = 'user_college';
-  static const String _kCity = 'user_city';
-  static const String _kEnrolledCourses = 'enrolled_courses';
+  // ── SharedPreferences keys ──────────────────────────────────
+  static const String _kOnboardingSeen      = 'onboarding_seen';
+  static const String _kUserJson            = 'user_json';      // NEW: full user JSON
+  static const String _kEnrolledCourses     = 'enrolled_courses';
   static const String _kEnrolledInternships = 'enrolled_internships';
-  static const String _kAppliedInternships = 'applied_internships';
-  static const String _kDoneLessons = 'done_lessons';
-  static const String _kDoneWeeks = 'done_weeks';
-  static const String _kLastLesson = 'last_lesson';
-  static const String _kPayments = 'payments';
-  static const String _kCertificates = 'certificates';
+  static const String _kAppliedInternships  = 'applied_internships';
+  static const String _kDoneLessons         = 'done_lessons';
+  static const String _kDoneWeeks           = 'done_weeks';
+  static const String _kLastLesson          = 'last_lesson';
+  static const String _kPayments            = 'payments';
+  static const String _kCertificates        = 'certificates';
 
-  // ---------- Padhai (phone me save hota hai) ----------
-  final Set<int> enrolledCourseIds = <int>{};
-  final Set<int> enrolledInternshipIds = <int>{};
-  final Set<int> appliedInternshipIds = <int>{}; // Stipend internships jinme apply kiya
-  final Set<String> completedLessons = <String>{}; // PlaylistItem.key
-  final Set<String> completedWeeks = <String>{}; // "internshipId_week"
-  final Map<int, String> _lastLessonKey = <int, String>{}; // courseId → lesson key
-  final List<PaymentRecord> payments = <PaymentRecord>[]; // Naya sabse upar
-  final List<CertificateRecord> certificates = <CertificateRecord>[]; // Naya sabse upar
+  // ── Learning data (locally cached) ─────────────────────────
+  final Set<int>    enrolledCourseIds     = <int>{};
+  final Set<int>    enrolledInternshipIds = <int>{};
+  final Set<int>    appliedInternshipIds  = <int>{};
+  final Set<String> completedLessons      = <String>{}; // PlaylistItem.key
+  final Set<String> completedWeeks        = <String>{}; // "internshipId_week"
+  final Map<int, String>        _lastLessonKey = <int, String>{};
+  final List<PaymentRecord>     payments       = <PaymentRecord>[];
+  final List<CertificateRecord> certificates   = <CertificateRecord>[];
+  final List<OfferLetterRecord> offerLetters   = <OfferLetterRecord>[];
 
-  /// Aakhri enroll internship tha? (Meri Padhai pe sahi tab kholne ke liye)
+  bool isLoadingCertificates = false;
+  String? certificatesError;
+  bool isLoadingOfferLetters = false;
+  String? offerLettersError;
+  bool isLoadingPayments = false;
+  String? paymentsError;
+
   bool lastEnrollWasInternship = false;
 
-  // ---------- Data ----------
-  HomeData home = HomeData.empty;
-  List<Course> courses = [];
-  InternshipCatalog internshipCatalog = InternshipCatalog.empty;
+  // ── Catalog data ────────────────────────────────────────────
+  HomeData home                        = HomeData.empty;
+  List<Course> courses                 = [];
+  InternshipCatalog internshipCatalog  = InternshipCatalog.empty;
   Map<int, List<QuizQuestion>> quizzes = {};
   List<Internship> get internships => internshipCatalog.internships;
 
   bool isLoading = true;
   String? errorMessage;
 
-  // ---------- User ----------
+  // ── User / Auth ─────────────────────────────────────────────
   UserProfile? user;
   bool onboardingSeen = false;
   bool get isLoggedIn => user != null && user!.isComplete;
 
-  // ---------- Courses screen ka selected filter ----------
+  // ── Courses screen filter ───────────────────────────────────
   String courseFilter = 'All';
 
+  // ── Auth state for register → OTP flow ─────────────────────
+  String? pendingEmail; // Email awaiting OTP verification
+
   // ============================================================
-  //  START — Splash screen se ek baar chalta hai
+  //  INIT — Splash screen se ek baar
   // ============================================================
   Future<void> init() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     onboardingSeen = prefs.getBool(_kOnboardingSeen) ?? false;
 
-    final String? phone = prefs.getString(_kPhone);
-    if (phone != null) {
-      user = UserProfile(
-        phone: phone,
-        name: prefs.getString(_kName) ?? '',
-        email: prefs.getString(_kEmail) ?? '',
-        college: prefs.getString(_kCollege) ?? '',
-        city: prefs.getString(_kCity) ?? '',
-      );
+    // Restore session: check secure storage for JWT token
+    final token = await ApiClient.getToken();
+    if (token != null && token.isNotEmpty) {
+      try {
+        // Authenticated live profile fetch from local PHP server
+        user = await repository.getProfile();
+        await syncMyInternships();
+      } catch (e) {
+        if (e is ApiException && e.statusCode == 401) {
+          // Token is expired, invalid, or student blocked -> wipe session
+          await logout();
+        } else {
+          // Offline / local cache fallback
+          final userJsonStr = prefs.getString(_kUserJson);
+          if (userJsonStr != null) {
+            try {
+              final map = jsonDecode(userJsonStr) as Map<String, dynamic>;
+              user = UserProfile.fromPrefsMap(map);
+            } catch (_) {
+              user = null;
+            }
+          }
+        }
+      }
+    } else {
+      user = null;
     }
+
     _loadLearning(prefs);
     await loadData();
   }
 
-  /// Phone me save kiya hua enrollment / progress padhna
+  // ── Learning data restore ───────────────────────────────────
   void _loadLearning(SharedPreferences prefs) {
     Set<int> readIds(String key) =>
-        (prefs.getStringList(key) ?? <String>[]).map(int.tryParse).whereType<int>().toSet();
+        (prefs.getStringList(key) ?? <String>[])
+            .map(int.tryParse)
+            .whereType<int>()
+            .toSet();
 
     enrolledCourseIds
       ..clear()
@@ -119,38 +150,40 @@ class AppState extends ChangeNotifier {
       ..addAll(prefs.getStringList(_kDoneWeeks) ?? <String>[]);
 
     _lastLessonKey.clear();
-    for (final String entry in prefs.getStringList(_kLastLesson) ?? <String>[]) {
-      final List<String> parts = entry.split('|'); // "1|1_0_2"
-      final int? courseId = parts.isNotEmpty ? int.tryParse(parts.first) : null;
-      if (courseId != null && parts.length == 2) _lastLessonKey[courseId] = parts[1];
+    for (final entry in prefs.getStringList(_kLastLesson) ?? <String>[]) {
+      final parts = entry.split('|'); // "1|1_0_2"
+      final courseId = parts.isNotEmpty ? int.tryParse(parts.first) : null;
+      if (courseId != null && parts.length == 2) {
+        _lastLessonKey[courseId] = parts[1];
+      }
     }
 
     certificates.clear();
-    for (final String text in prefs.getStringList(_kCertificates) ?? <String>[]) {
+    for (final text in prefs.getStringList(_kCertificates) ?? <String>[]) {
       try {
-        certificates.add(CertificateRecord.fromJson(jsonDecode(text) as Map<String, dynamic>));
-      } catch (_) {
-        // Kharab record chhod do
-      }
+        certificates
+            .add(CertificateRecord.fromJson(jsonDecode(text) as Map<String, dynamic>));
+      } catch (_) {}
     }
 
     payments.clear();
-    for (final String text in prefs.getStringList(_kPayments) ?? <String>[]) {
+    for (final text in prefs.getStringList(_kPayments) ?? <String>[]) {
       try {
-        payments.add(PaymentRecord.fromJson(jsonDecode(text) as Map<String, dynamic>));
-      } catch (_) {
-        // Kharab record chhod do
-      }
+        payments
+            .add(PaymentRecord.fromJson(jsonDecode(text) as Map<String, dynamic>));
+      } catch (_) {}
     }
   }
 
-  /// Enrollment / progress phone me save karna
   Future<void> _saveLearning() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> ids(Set<int> set) => set.map((id) => id.toString()).toList();
+    final prefs = await SharedPreferences.getInstance();
+    List<String> ids(Set<int> set) =>
+        set.map((id) => id.toString()).toList();
     await prefs.setStringList(_kEnrolledCourses, ids(enrolledCourseIds));
-    await prefs.setStringList(_kEnrolledInternships, ids(enrolledInternshipIds));
-    await prefs.setStringList(_kAppliedInternships, ids(appliedInternshipIds));
+    await prefs.setStringList(
+        _kEnrolledInternships, ids(enrolledInternshipIds));
+    await prefs.setStringList(
+        _kAppliedInternships, ids(appliedInternshipIds));
     await prefs.setStringList(_kDoneLessons, completedLessons.toList());
     await prefs.setStringList(_kDoneWeeks, completedWeeks.toList());
     await prefs.setStringList(
@@ -158,33 +191,32 @@ class AppState extends ChangeNotifier {
       _lastLessonKey.entries.map((e) => '${e.key}|${e.value}').toList(),
     );
     await prefs.setStringList(
-      _kPayments,
-      payments.map((p) => jsonEncode(p.toJson())).toList(),
-    );
-    await prefs.setStringList(
-      _kCertificates,
-      certificates.map((c) => jsonEncode(c.toJson())).toList(),
-    );
+        _kPayments, payments.map((p) => jsonEncode(p.toJson())).toList());
+    await prefs.setStringList(_kCertificates,
+        certificates.map((c) => jsonEncode(c.toJson())).toList());
   }
 
-  /// Courses, internships aur home data load karo
+  // ============================================================
+  //  DATA LOADING — Catalog (courses, internships, home)
+  // ============================================================
   Future<void> loadData() async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
     try {
-      final List<Object> results = await Future.wait<Object>([
+      final results = await Future.wait<Object>([
         repository.getHomeData(),
         repository.getCourses(),
         repository.getInternships(),
         repository.getQuizzes(),
       ]);
-      home = results[0] as HomeData;
-      courses = results[1] as List<Course>;
-      internshipCatalog = results[2] as InternshipCatalog;
-      quizzes = results[3] as Map<int, List<QuizQuestion>>;
+      home               = results[0] as HomeData;
+      courses            = results[1] as List<Course>;
+      internshipCatalog  = results[2] as InternshipCatalog;
+      quizzes            = results[3] as Map<int, List<QuizQuestion>>;
     } catch (e) {
-      errorMessage = 'Data load nahi ho paya. Internet check karke dobara try karein.';
+      errorMessage =
+          'Data load nahi ho paya. Server / internet check karein.';
       debugPrint('loadData error: $e');
     }
     isLoading = false;
@@ -192,22 +224,80 @@ class AppState extends ChangeNotifier {
   }
 
   // ============================================================
-  //  LOGIN / PROFILE
+  //  ONBOARDING
   // ============================================================
   Future<void> markOnboardingSeen() async {
     onboardingSeen = true;
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_kOnboardingSeen, true);
+    notifyListeners();
   }
 
-  /// OTP verify hone ke baad. Agar wahi number pehle se save hai to
-  /// purani profile rakhte hain, warna nayi khaali profile.
+  // ============================================================
+  //  AUTH — Register / OTP / Login / Logout
+  // ============================================================
+
+  /// Step 1 — New user: register (sends 6-digit OTP to email)
+  Future<void> register({
+    required String name,
+    required String email,
+    required String phone,
+    required String password,
+  }) async {
+    await repository.register(
+      name: name,
+      email: email,
+      phone: phone,
+      password: password,
+    );
+    pendingEmail = email;
+    notifyListeners();
+  }
+
+  /// Step 2 — Verify OTP (after register OR resend)
+  Future<void> verifyOtp({required String email, required String otp}) async {
+    final result = await repository.verifyOtp(email: email, otp: otp);
+    user = result.user;
+    pendingEmail = null;
+    await _saveUserToPrefs();
+    await syncMyInternships();
+    notifyListeners();
+  }
+
+  /// Direct login (existing verified user: email + password)
+  Future<void> login({required String email, required String password}) async {
+    final result = await repository.login(email: email, password: password);
+    user = result.user;
+    await _saveUserToPrefs();
+    await syncMyInternships();
+    notifyListeners();
+  }
+
+  /// Resend OTP to email
+  Future<void> resendOtp({required String email}) async {
+    await repository.resendOtp(email: email);
+  }
+
+  /// Legacy phone OTP (mock mode only)
+  Future<bool> sendOtp(String phone) =>
+      repository.sendOtp(phone);
+
+  /// Legacy phone OTP verify (mock mode only)
+  Future<bool> verifyOtpLegacy(String phone, String otp) =>
+      repository.verifyOtpLegacy(phone, otp);
+
+  /// Used by legacy OTP screen to set user after mock verify
   Future<void> loginWithPhone(String phone) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (user == null || user!.phone != phone) {
-      user = UserProfile(phone: phone, name: '', email: '', college: '', city: '');
+    if (user == null || (user!.phone != phone && phone.isNotEmpty)) {
+      user = UserProfile(
+          id: 0,
+          phone: phone,
+          name: '',
+          email: '',
+          college: '',
+          city: '');
     }
-    await prefs.setString(_kPhone, phone);
+    await _saveUserToPrefs();
     notifyListeners();
   }
 
@@ -217,33 +307,42 @@ class AppState extends ChangeNotifier {
     required String college,
     required String city,
   }) async {
-    final UserProfile current = user ??
-        const UserProfile(phone: '', name: '', email: '', college: '', city: '');
+    final current = user ??
+        const UserProfile(
+            id: 0, phone: '', name: '', email: '', college: '', city: '');
     user = current.copyWith(
       name: name.trim(),
       email: email.trim(),
       college: college.trim(),
       city: city.trim(),
     );
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_kName, user!.name);
-    await prefs.setString(_kEmail, user!.email);
-    await prefs.setString(_kCollege, user!.college);
-    await prefs.setString(_kCity, user!.city);
+    await _saveUserToPrefs();
+
+    // Also push to server if logged in via API
+    try {
+      await repository.updateProfile(
+        name: name.trim(),
+        phone: current.phone,
+        college: college.trim(),
+      );
+    } catch (_) {
+      // Non-fatal — local save still worked
+    }
     notifyListeners();
   }
 
-  /// Logout: user ki details aur uski padhai ka data phone se hata do
   Future<void> logout() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    for (final String key in [
-      _kPhone, _kName, _kEmail, _kCollege, _kCity,
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_kUserJson);
+    await ApiClient.clearToken();
+    for (final key in [
       _kEnrolledCourses, _kEnrolledInternships, _kAppliedInternships,
       _kDoneLessons, _kDoneWeeks, _kLastLesson, _kPayments, _kCertificates,
     ]) {
       await prefs.remove(key);
     }
     user = null;
+    pendingEmail = null;
     enrolledCourseIds.clear();
     enrolledInternshipIds.clear();
     appliedInternshipIds.clear();
@@ -252,23 +351,30 @@ class AppState extends ChangeNotifier {
     _lastLessonKey.clear();
     payments.clear();
     certificates.clear();
+    offerLetters.clear();
+    certificatesError = null;
+    offerLettersError = null;
+    paymentsError = null;
     notifyListeners();
+  }
+
+  Future<void> _saveUserToPrefs() async {
+    if (user == null) return;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kUserJson, jsonEncode(user!.toPrefsMap()));
   }
 
   // ============================================================
   //  COURSES
   // ============================================================
-
-  /// courses.json me jitni categories hain (same order me)
   List<String> get courseCategories {
-    final List<String> result = [];
-    for (final Course c in courses) {
+    final result = <String>[];
+    for (final c in courses) {
       if (!result.contains(c.category)) result.add(c.category);
     }
     return result;
   }
 
-  /// Courses screen pe filter ke hisaab se list
   List<Course> get filteredCourses {
     if (courseFilter == 'All') return courses;
     return courses.where((c) => c.category == courseFilter).toList();
@@ -279,9 +385,8 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Home pe "Popular Courses" — sabse zyada students wale 6
   List<Course> get popularCourses {
-    final List<Course> sorted = List<Course>.of(courses)
+    final sorted = List<Course>.of(courses)
       ..sort((a, b) => b.students.compareTo(a.students));
     return sorted.take(6).toList();
   }
@@ -292,34 +397,32 @@ class AppState extends ChangeNotifier {
   List<Internship> internshipsOfType(String type) =>
       internships.where((i) => i.type == type).toList();
 
-  /// Ek type (e.g. paid) me kaun-kaun se domains hain
   List<String> domainsForType(String type) {
-    final List<String> result = [];
-    for (final Internship i in internshipsOfType(type)) {
+    final result = <String>[];
+    for (final i in internshipsOfType(type)) {
       if (!result.contains(i.domain)) result.add(i.domain);
     }
     return result;
   }
 
-  /// Home pe dikhane ke liye har type ki ek-ek internship
   List<Internship> get featuredInternships {
-    final List<Internship> result = [];
-    for (final String type in Internship.allTypes) {
-      final List<Internship> ofType = internshipsOfType(type);
+    final result = <Internship>[];
+    for (final type in Internship.allTypes) {
+      final ofType = internshipsOfType(type);
       if (ofType.isNotEmpty) result.add(ofType.first);
     }
     return result;
   }
 
   Course? courseById(int id) {
-    for (final Course c in courses) {
+    for (final c in courses) {
       if (c.id == id) return c;
     }
     return null;
   }
 
   Internship? internshipById(int id) {
-    for (final Internship i in internships) {
+    for (final i in internships) {
       if (i.id == id) return i;
     }
     return null;
@@ -328,27 +431,31 @@ class AppState extends ChangeNotifier {
   // ============================================================
   //  ENROLL / PAYMENT
   // ============================================================
-  bool isCourseEnrolled(int id) => enrolledCourseIds.contains(id);
+  bool isCourseEnrolled(int id)     => enrolledCourseIds.contains(id);
   bool isInternshipEnrolled(int id) => enrolledInternshipIds.contains(id);
   bool hasApplied(int internshipId) => appliedInternshipIds.contains(internshipId);
 
-  /// Enroll kiye hue courses (naya sabse upar)
   List<Course> get enrolledCourses =>
-      enrolledCourseIds.map(courseById).whereType<Course>().toList().reversed.toList();
+      enrolledCourseIds
+          .map(courseById)
+          .whereType<Course>()
+          .toList()
+          .reversed
+          .toList();
 
-  /// Enroll ki hui internships (naya sabse upar)
-  List<Internship> get enrolledInternships => enrolledInternshipIds
-      .map(internshipById)
-      .whereType<Internship>()
-      .toList()
-      .reversed
-      .toList();
+  List<Internship> get enrolledInternships =>
+      enrolledInternshipIds
+          .map(internshipById)
+          .whereType<Internship>()
+          .toList()
+          .reversed
+          .toList();
 
-  /// Payment ke baad: receipt banao + enroll karo.
-  /// DEMO: asli paisa nahi katta. Backend me yahan Razorpay verify hoga.
-  Future<PaymentRecord> completePurchase(PurchaseItem item, String method) async {
-    final DateTime now = DateTime.now();
-    final PaymentRecord record = PaymentRecord(
+  /// DEMO payment: receipt banao + enroll karo (no real money)
+  Future<PaymentRecord> completePurchase(
+      PurchaseItem item, String method) async {
+    final now = DateTime.now();
+    final record = PaymentRecord(
       orderId: 'DV${now.millisecondsSinceEpoch.toString().substring(5)}',
       type: item.type,
       itemId: item.id,
@@ -369,15 +476,20 @@ class AppState extends ChangeNotifier {
     return record;
   }
 
-  /// Free internship (bina payment)
   Future<void> enrollFreeInternship(Internship internship) async {
+    // Try server first (auth), fallback to local only
+    try {
+      await repository.enrollFreeInternship(
+          internshipId: internship.id);
+    } catch (_) {
+      // If server fails, still enroll locally (mock / offline)
+    }
     enrolledInternshipIds.add(internship.id);
     lastEnrollWasInternship = true;
     await _saveLearning();
     notifyListeners();
   }
 
-  /// Stipend internship ke liye application
   Future<void> applyForInternship(Internship internship) async {
     appliedInternshipIds.add(internship.id);
     await _saveLearning();
@@ -385,23 +497,61 @@ class AppState extends ChangeNotifier {
   }
 
   // ============================================================
-  //  COURSE PROGRESS (lessons)
+  //  WORKSPACE & TASKS (API)
   // ============================================================
-  bool isLessonDone(PlaylistItem item) => completedLessons.contains(item.key);
+  Future<List<EnrolledInternship>> syncMyInternships() async {
+    try {
+      final list = await repository.getMyInternships();
+      for (final item in list) {
+        enrolledInternshipIds.add(item.internshipId);
+      }
+      await _saveLearning();
+      notifyListeners();
+      return list;
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<WorkspaceData> loadWorkspace(int internshipId) {
+    return repository.getWorkspace(internshipId);
+  }
+
+  Future<TaskSubmission> submitTask({
+    required int internshipId,
+    required int moduleId,
+    required String submissionLink,
+    String? studentNotes,
+  }) async {
+    final sub = await repository.submitTask(
+      internshipId: internshipId,
+      moduleId: moduleId,
+      submissionLink: submissionLink,
+      studentNotes: studentNotes,
+    );
+    notifyListeners();
+    return sub;
+  }
+
+  // ============================================================
+  //  COURSE PROGRESS
+  // ============================================================
+  bool isLessonDone(PlaylistItem item) =>
+      completedLessons.contains(item.key);
 
   int completedLessonCount(Course course) =>
       course.playlist.where((p) => completedLessons.contains(p.key)).length;
 
-  /// 0.0 se 1.0 tak
   double courseProgress(Course course) {
-    final int total = course.playlist.length;
+    final total = course.playlist.length;
     if (total == 0) return 0;
     return completedLessonCount(course) / total;
   }
 
   bool isCourseCompleted(Course course) {
-    final List<PlaylistItem> list = course.playlist;
-    return list.isNotEmpty && list.every((p) => completedLessons.contains(p.key));
+    final list = course.playlist;
+    return list.isNotEmpty &&
+        list.every((p) => completedLessons.contains(p.key));
   }
 
   Future<void> setLessonDone(PlaylistItem item, bool done) async {
@@ -414,45 +564,43 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Aakhri baar kaunsa lesson khola tha (Resume ke liye)
   Future<void> setLastLesson(Course course, PlaylistItem item) async {
-    _lastLessonKey.remove(course.id); // Hata ke dobara daalne se yeh "latest" ban jata hai
+    _lastLessonKey.remove(course.id);
     _lastLessonKey[course.id] = item.key;
     await _saveLearning();
     notifyListeners();
   }
 
-  /// Resume pe kaunsa lesson khule: aakhri khola hua → pehla adhoora → pehla
   PlaylistItem? resumeLesson(Course course) {
-    final List<PlaylistItem> list = course.playlist;
+    final list = course.playlist;
     if (list.isEmpty) return null;
-    final String? last = _lastLessonKey[course.id];
-    for (final PlaylistItem p in list) {
+    final last = _lastLessonKey[course.id];
+    for (final p in list) {
       if (p.key == last) return p;
     }
-    for (final PlaylistItem p in list) {
+    for (final p in list) {
       if (!completedLessons.contains(p.key)) return p;
     }
     return list.first;
   }
 
-  /// Home ke "Continue Learning" ke liye — sabse haal me padha course
   Course? get continueCourse {
-    final List<int> recent = _lastLessonKey.keys.toList().reversed.toList();
-    for (final int id in recent) {
+    final recent = _lastLessonKey.keys.toList().reversed.toList();
+    for (final id in recent) {
       if (enrolledCourseIds.contains(id)) {
-        final Course? c = courseById(id);
+        final c = courseById(id);
         if (c != null) return c;
       }
     }
-    final List<Course> list = enrolledCourses;
+    final list = enrolledCourses;
     return list.isEmpty ? null : list.first;
   }
 
   // ============================================================
-  //  INTERNSHIP PROGRESS (weeks)
+  //  INTERNSHIP PROGRESS
   // ============================================================
-  String _weekKey(Internship internship, int week) => '${internship.id}_$week';
+  String _weekKey(Internship internship, int week) =>
+      '${internship.id}_$week';
 
   bool isWeekDone(Internship internship, int week) =>
       completedWeeks.contains(_weekKey(internship, week));
@@ -466,10 +614,13 @@ class AppState extends ChangeNotifier {
   }
 
   double internshipProgress(Internship internship) =>
-      internship.weeks == 0 ? 0 : completedWeekCount(internship) / internship.weeks;
+      internship.weeks == 0
+          ? 0
+          : completedWeekCount(internship) / internship.weeks;
 
-  Future<void> setWeekDone(Internship internship, int week, bool done) async {
-    final String key = _weekKey(internship, week);
+  Future<void> setWeekDone(
+      Internship internship, int week, bool done) async {
+    final key = _weekKey(internship, week);
     if (done) {
       completedWeeks.add(key);
     } else {
@@ -482,51 +633,97 @@ class AppState extends ChangeNotifier {
   // ============================================================
   //  QUIZ & CERTIFICATE
   // ============================================================
+  Future<List<QuizInfo>> loadQuizzes({int? internshipId, int? quizId}) {
+    return repository.getQuizList(internshipId: internshipId, quizId: quizId);
+  }
 
-  /// Course ke quiz sawaal (quizzes.json se). Khaali = quiz nahi bana
-  List<QuizQuestion> quizFor(Course course) => quizzes[course.id] ?? const [];
+  Future<QuizSession> startQuizSession(int quizId) {
+    return repository.startQuizSession(quizId);
+  }
 
-  /// Is course / internship ka certificate (agar mil chuka hai)
+  Future<List<ApiQuizQuestion>> loadQuizQuestions(String sessionToken) {
+    return repository.getQuizQuestions(sessionToken);
+  }
+
+  Future<void> saveQuizDraftAnswer({
+    required String sessionToken,
+    required int questionId,
+    required String selectedOption,
+    bool isReview = false,
+  }) {
+    return repository.saveQuizDraftAnswer(
+      sessionToken: sessionToken,
+      questionId: questionId,
+      selectedOption: selectedOption,
+      isReview: isReview,
+    );
+  }
+
+  Future<QuizResult> submitQuiz({
+    required String sessionToken,
+    Map<int, String>? answers,
+  }) {
+    return repository.submitQuiz(
+      sessionToken: sessionToken,
+      answers: answers,
+    );
+  }
+
+  Future<QuizResult> loadQuizResult(int attemptId) {
+    return repository.getQuizResult(attemptId);
+  }
+
+  Future<void> logQuizViolation({
+    required String sessionToken,
+    String violationType = 'app_backgrounded',
+  }) {
+    return repository.logQuizViolation(
+      sessionToken: sessionToken,
+      violationType: violationType,
+    );
+  }
+
+  List<QuizQuestion> quizFor(Course course) =>
+      quizzes[course.id] ?? const [];
+
   CertificateRecord? certificateFor(String type, int itemId) {
-    for (final CertificateRecord c in certificates) {
+    for (final c in certificates) {
       if (c.type == type && c.itemId == itemId) return c;
     }
     return null;
   }
 
-  /// Certificate ID se dhoondo (Verify screen)
   CertificateRecord? findCertificate(String id) {
-    final String wanted = id.trim().toUpperCase();
-    for (final CertificateRecord c in certificates) {
+    final wanted = id.trim().toUpperCase();
+    for (final c in certificates) {
       if (c.id.toUpperCase() == wanted) return c;
     }
     return null;
   }
 
-  /// Naya certificate banao (pehle se hai to wahi wapas).
-  /// DEMO: phone me banta hai. Backend me server banayega aur ID dega.
   Future<CertificateRecord> issueCertificate({
     required String type,
     required int itemId,
     required String title,
     int? scorePercent,
   }) async {
-    final CertificateRecord? existing = certificateFor(type, itemId);
+    final existing = certificateFor(type, itemId);
     if (existing != null) return existing;
 
-    final DateTime now = DateTime.now();
-    final Random random = Random();
+    final now = DateTime.now();
+    final random = Random();
     String id;
     do {
       id = 'DV-${now.year}-${100000 + random.nextInt(900000)}';
     } while (findCertificate(id) != null);
 
-    final CertificateRecord record = CertificateRecord(
+    final record = CertificateRecord(
       id: id,
       type: type,
       itemId: itemId,
       title: title,
-      studentName: (user?.name.isNotEmpty ?? false) ? user!.name : 'Student',
+      studentName:
+          (user?.name.isNotEmpty ?? false) ? user!.name : 'Student',
       date: now,
       scorePercent: scorePercent,
     );
@@ -537,10 +734,84 @@ class AppState extends ChangeNotifier {
   }
 
   // ============================================================
+  //  STUDENT DOCUMENTS (API / LOCAL)
+  // ============================================================
+
+  Future<List<CertificateRecord>> loadCertificates({bool forceRefresh = false}) async {
+    if (isLoadingCertificates) return certificates;
+    isLoadingCertificates = true;
+    certificatesError = null;
+    notifyListeners();
+    try {
+      final list = await repository.getCertificates();
+      certificates
+        ..clear()
+        ..addAll(list);
+      await _saveLearning();
+      return certificates;
+    } catch (e) {
+      certificatesError = e.toString();
+      return certificates;
+    } finally {
+      isLoadingCertificates = false;
+      notifyListeners();
+    }
+  }
+
+  Future<List<OfferLetterRecord>> loadOfferLetters({bool forceRefresh = false}) async {
+    if (isLoadingOfferLetters) return offerLetters;
+    isLoadingOfferLetters = true;
+    offerLettersError = null;
+    notifyListeners();
+    try {
+      final list = await repository.getOfferLetters();
+      offerLetters
+        ..clear()
+        ..addAll(list);
+      return offerLetters;
+    } catch (e) {
+      offerLettersError = e.toString();
+      return offerLetters;
+    } finally {
+      isLoadingOfferLetters = false;
+      notifyListeners();
+    }
+  }
+
+  Future<List<PaymentRecord>> loadPaymentReceipts({bool forceRefresh = false}) async {
+    if (isLoadingPayments) return payments;
+    isLoadingPayments = true;
+    paymentsError = null;
+    notifyListeners();
+    try {
+      final list = await repository.getPaymentReceipts();
+      payments
+        ..clear()
+        ..addAll(list);
+      await _saveLearning();
+      return payments;
+    } catch (e) {
+      paymentsError = e.toString();
+      return payments;
+    } finally {
+      isLoadingPayments = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadAllStudentDocuments({bool forceRefresh = false}) async {
+    await Future.wait([
+      loadCertificates(forceRefresh: forceRefresh),
+      loadOfferLetters(forceRefresh: forceRefresh),
+      loadPaymentReceipts(forceRefresh: forceRefresh),
+    ]);
+  }
+
+  // ============================================================
   //  SEARCH
   // ============================================================
   List<Course> searchCourses(String query) {
-    final String q = query.trim().toLowerCase();
+    final q = query.trim().toLowerCase();
     if (q.isEmpty) return [];
     return courses
         .where((c) =>
@@ -551,10 +822,12 @@ class AppState extends ChangeNotifier {
   }
 
   List<Internship> searchInternships(String query) {
-    final String q = query.trim().toLowerCase();
+    final q = query.trim().toLowerCase();
     if (q.isEmpty) return [];
     return internships
-        .where((i) => i.title.toLowerCase().contains(q) || i.domain.toLowerCase().contains(q))
+        .where((i) =>
+            i.title.toLowerCase().contains(q) ||
+            i.domain.toLowerCase().contains(q))
         .toList();
   }
 }

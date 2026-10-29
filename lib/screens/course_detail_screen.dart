@@ -14,14 +14,13 @@ import '../config/app_colors.dart';
 import '../config/app_config.dart';
 import '../config/app_theme.dart';
 import '../data/models/course.dart';
-import '../data/models/payment.dart';
 import '../state/app_state.dart';
 import '../widgets/app_card.dart';
 import '../widgets/course_info_bits.dart';
 import '../widgets/course_thumb.dart';
 import '../widgets/empty_state.dart';
+import '../utils/launcher.dart';
 import 'lesson_player_screen.dart';
-import 'payment_screen.dart';
 
 class CourseDetailScreen extends StatefulWidget {
   const CourseDetailScreen({super.key, required this.course});
@@ -388,11 +387,7 @@ class _EnrollBar extends StatelessWidget {
         ),
       );
     } else {
-      Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => PaymentScreen(item: PurchaseItem.fromCourse(course)),
-        ),
-      );
+      showWebsitePurchaseDialog(context);
     }
   }
 

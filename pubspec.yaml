@@ -25,6 +25,8 @@ dependencies:
   qr_flutter: ^4.1.0 # Certificate pe QR code
   pdf: ^3.11.0 # Certificate ki PDF banana
   printing: ^5.13.0 # PDF save / print / share karna
+  http: ^1.2.2 # REST API calls to PHP backend
+  flutter_secure_storage: ^11.2.0
 
 dev_dependencies:
   flutter_test:

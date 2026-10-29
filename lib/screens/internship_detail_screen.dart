@@ -10,13 +10,11 @@ import 'package:provider/provider.dart';
 import '../config/app_colors.dart';
 import '../config/app_theme.dart';
 import '../data/models/internship.dart';
-import '../data/models/payment.dart';
 import '../state/app_state.dart';
 import '../utils/launcher.dart';
 import '../widgets/app_card.dart';
 import '../widgets/internship_card.dart';
 import 'internship_progress_screen.dart';
-import 'payment_screen.dart';
 import 'stipend_apply_screen.dart';
 
 class InternshipDetailScreen extends StatelessWidget {
@@ -47,11 +45,7 @@ class InternshipDetailScreen extends StatelessWidget {
         MaterialPageRoute<void>(builder: (_) => StipendApplyScreen(internship: internship)),
       );
     } else {
-      Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => PaymentScreen(item: PurchaseItem.fromInternship(internship)),
-        ),
-      );
+      showWebsitePurchaseDialog(context);
     }
   }
 
